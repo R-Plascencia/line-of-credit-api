@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :users do
     resources :credit_lines do
       resources :payments
+      resources :withdrawals
     end
   end
 

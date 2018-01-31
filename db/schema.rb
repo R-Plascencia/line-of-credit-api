@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131194940) do
+ActiveRecord::Schema.define(version: 20180131223218) do
 
   create_table "credit_lines", force: :cascade do |t|
     t.integer "user_id"
@@ -25,7 +25,8 @@ ActiveRecord::Schema.define(version: 20180131194940) do
   end
 
   create_table "payments", force: :cascade do |t|
-    t.float "amount"
+    t.float "amount", null: false
+    t.float "new_bal"
     t.integer "credit_line_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -40,6 +41,15 @@ ActiveRecord::Schema.define(version: 20180131194940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email"
+  end
+
+  create_table "withdrawals", force: :cascade do |t|
+    t.integer "credit_line_id"
+    t.float "amount", null: false
+    t.float "new_bal"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["credit_line_id"], name: "index_withdrawals_on_credit_line_id"
   end
 
 end
