@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :credit_lines
-  resources :users
+  resources :users do
+    resources :credit_lines do
+      resources :payments
+    end
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

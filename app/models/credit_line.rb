@@ -1,5 +1,6 @@
 class CreditLine < ApplicationRecord
     belongs_to :user
+    has_many :payments
 
     scope :has_outstanding_principal, lambda { where('principal_bal > 0') }
     scope :sorted, lambda { order('principal_bal ASC') }
