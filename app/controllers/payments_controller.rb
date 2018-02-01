@@ -3,6 +3,8 @@ class PaymentsController < ApplicationController
   before_action :set_credit_line
   before_action :set_payment, only: [:show, :update, :destroy]
 
+  include InterestHelper
+
   # GET /users/:user_id/credit_lines/:credit_line_id/payments
   def index
     render json: @credit_line.payments
@@ -16,8 +18,13 @@ class PaymentsController < ApplicationController
   # POST /users/:user_id/credit_lines/:credit_line_id/payments
   def create
     @payment = Payment.new(payment_params)
+    prev_principal = @credit_line.principal_bal
     @credit_line.principal_bal -= @payment.amount
     @payment.new_bal = @credit_line.principal_bal
+
+    # Set interest on the previous balance before changing it
+    interest = calculate_interest(@credit_line, prev_principal)
+    @credit_line.interest += interest
 
     # Set the maxed flag if no longer maxed out
     @credit_line.maxed = false if @credit_line.principal_bal < @credit_line.credit_limit

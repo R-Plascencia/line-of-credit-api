@@ -3,6 +3,8 @@ class WithdrawalsController < ApplicationController
   before_action :set_credit_line
   before_action :set_withdrawal, only: [:show, :update, :destroy]
 
+  include InterestHelper
+
   # GET /users/:user_id/credit_lines/:credit_line_id/withdrawals
   def index
     render json: @credit_line.withdrawals
@@ -27,6 +29,9 @@ class WithdrawalsController < ApplicationController
       new_principal = principal_bal + @withdrawal.amount
       credit_limit = @credit_line.credit_limit
 
+      # Set interest on the previous balance before changing it
+      interest = calculate_interest(@credit_line, principal_bal)
+
       # Now check if the withdrawal will put you over your limit
       if new_principal > credit_limit
         valid_amt = credit_limit - @credit_line.principal_bal
@@ -37,6 +42,7 @@ class WithdrawalsController < ApplicationController
       else
         @credit_line.principal_bal = new_principal
         @withdrawal.new_bal = new_principal
+        @credit_line.interest += interest
 
         # Before save set the maxed flag if we are now maxed out
         @credit_line.maxed = true if new_principal == credit_limit
@@ -48,12 +54,10 @@ class WithdrawalsController < ApplicationController
         end
       end
     end
-
   end
 
   # Withdrawals should not be able to be modified after they have been created. If an
   # account needs a withdrawal reversed, then a payment would be made in the amount needed
-  #
   # PATCH/PUT /users/:user_id/credit_lines/:credit_line_id/withdrawals/:id
   def update
     # if @withdrawal.update(withdrawal_params)
@@ -64,7 +68,6 @@ class WithdrawalsController < ApplicationController
     render status:405, json: {
       errors: 'Withdrawals cannot be edited or otherwise tampered with after creation.'
     }
-
   end
 
   # DELETE /users/:user_id/credit_lines/:credit_line_id/withdrawals/:id
