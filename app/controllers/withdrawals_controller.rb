@@ -16,14 +16,39 @@ class WithdrawalsController < ApplicationController
   # POST /users/:user_id/credit_lines/:credit_line_id/withdrawals
   def create
     @withdrawal = Withdrawal.new(withdrawal_params)
-    @credit_line.principal_bal += @withdrawal.amount
-    @withdrawal.new_bal = @credit_line.principal_bal
 
-    if @withdrawal.save && @credit_line.save
-      render json: @withdrawal, status: :created
+    # Check if LOC is already maxed first
+    if is_maxed?
+      render status:402, json: {
+        errors: 'Line of credit is maxed out. Please make a payment in order to continue use.'
+      }
     else
-      render json: @withdrawal.errors, status: :unprocessable_entity
+      principal_bal = @credit_line.principal_bal
+      new_principal = principal_bal + @withdrawal.amount
+      credit_limit = @credit_line.credit_limit
+
+      # Now check if the withdrawal will put you over your limit
+      if new_principal > credit_limit
+        valid_amt = credit_limit - @credit_line.principal_bal
+
+        render status:402, json:{
+          errors: "Withdrawal surpasses credit limit. Can only withdraw $#{valid_amt.to_f.round(2)} or less."
+        }
+      else
+        @credit_line.principal_bal = new_principal
+        @withdrawal.new_bal = new_principal
+
+        # Before save set the maxed flag if we are now maxed out
+        @credit_line.maxed = true if new_principal == credit_limit
+    
+        if @withdrawal.save && @credit_line.save
+          render json: @withdrawal, status: :created
+        else
+          render json: @withdrawal.errors.full_messages, status: :unprocessable_entity
+        end
+      end
     end
+
   end
 
   # Withdrawals should not be able to be modified after they have been created. If an
@@ -36,7 +61,9 @@ class WithdrawalsController < ApplicationController
     # else
     #   render json: @withdrawal.errors, status: :unprocessable_entity
     # end
-    render json: {status: 'error', code: 403, message: 'Withdrawals cannot be edited or otherwise tampered with after creation.'}
+    render status:405, json: {
+      errors: 'Withdrawals cannot be edited or otherwise tampered with after creation.'
+    }
 
   end
 
@@ -57,6 +84,10 @@ class WithdrawalsController < ApplicationController
 
     def set_credit_line
       @credit_line = CreditLine.find(params[:credit_line_id])
+    end
+
+    def is_maxed?
+      return @credit_line.maxed
     end
 
     # Only allow a trusted parameter "white list" through.

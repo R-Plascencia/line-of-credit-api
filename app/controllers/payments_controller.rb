@@ -19,10 +19,13 @@ class PaymentsController < ApplicationController
     @credit_line.principal_bal -= @payment.amount
     @payment.new_bal = @credit_line.principal_bal
 
+    # Set the maxed flag if no longer maxed out
+    @credit_line.maxed = false if @credit_line.principal_bal < @credit_line.credit_limit
+
     if @payment.save && @credit_line.save
       render json: @payment, status: :created
     else
-      render json: @payment.errors, status: :unprocessable_entity
+      render json: @payment.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -37,7 +40,9 @@ class PaymentsController < ApplicationController
     # else
     #   render json: @payment.errors, status: :unprocessable_entity
     # end
-    render json: {status: 'error', code: 403, message: 'Payments cannot be edited or otherwise tampered with after creation.'}
+    render status:403, json: { 
+      message: 'Payments cannot be edited or otherwise tampered with after creation.'
+    }
   end
 
   # DESTROY is ok, as in real life we might just want to store past payments for 
