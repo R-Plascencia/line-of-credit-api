@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20180201011559) do
   create_table "credit_lines", force: :cascade do |t|
     t.integer "user_id"
     t.integer "credit_limit", null: false
-    t.integer "principal_bal", default: 0
+    t.float "principal_bal", default: 0.0
     t.float "apr", null: false
     t.boolean "maxed", default: false
     t.string "name", limit: 40, null: false

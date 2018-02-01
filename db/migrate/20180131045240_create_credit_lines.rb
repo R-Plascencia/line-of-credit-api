@@ -3,7 +3,7 @@ class CreateCreditLines < ActiveRecord::Migration[5.1]
     create_table :credit_lines do |t|
       t.integer :user_id
       t.integer :credit_limit, :null => false
-      t.integer :principal_bal, :default => 0
+      t.float :principal_bal, :default => 0
       t.float :apr, :null => false
 
       t.boolean :maxed, :default => false
