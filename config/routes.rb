@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
-  resources :users do
-    resources :credit_lines do
-      resources :payments
-      resources :withdrawals
+  post 'user_token' => 'user_token#create'
+  scope '/api' do
+    resources :users do
+      resources :credit_lines do
+        resources :payments
+        resources :withdrawals
+      end
     end
   end
 

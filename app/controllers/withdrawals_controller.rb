@@ -1,4 +1,5 @@
 class WithdrawalsController < ApplicationController
+  before_action :authenticate_user
   before_action :set_user
   before_action :set_credit_line
   before_action :set_withdrawal, only: [:show, :update, :destroy]

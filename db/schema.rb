@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201011559) do
+ActiveRecord::Schema.define(version: 20180201232825) do
 
   create_table "credit_lines", force: :cascade do |t|
     t.integer "user_id"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20180201011559) do
     t.string "first_name"
     t.string "last_name"
     t.string "email", default: "", null: false
-    t.string "password", limit: 40, null: false
+    t.string "password_digest", limit: 40, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email"

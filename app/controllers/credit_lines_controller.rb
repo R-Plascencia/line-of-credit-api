@@ -1,4 +1,5 @@
 class CreditLinesController < ApplicationController
+  before_action :authenticate_user, except: [:index]
   before_action :set_user
   before_action :set_credit_line, only: [:show, :update, :destroy]
 
