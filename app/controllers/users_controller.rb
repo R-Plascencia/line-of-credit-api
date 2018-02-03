@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user, except: [:index, :create, :destroy]
   before_action :set_user, only: [:show, :update, :destroy]
 
   # GET /users
@@ -10,7 +11,11 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    render json: @user
+    if current_user.id == @user.id
+      render json: @user
+    else
+      render status:401, json: { 'errors': 'Not authorized to access this page.'}
+    end
   end
 
   # POST /users
