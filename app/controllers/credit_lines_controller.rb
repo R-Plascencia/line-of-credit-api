@@ -21,7 +21,7 @@ class CreditLinesController < ApplicationController
       ApplyInterestCycleJob.set(wait: 5.minutes).perform_later(@credit_line)
       render json: @credit_line, status: :created
     else
-      render json: @credit_line.errors, status: :unprocessable_entity
+      render json: @credit_line.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -51,6 +51,6 @@ class CreditLinesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def credit_line_params
-      params.require(:credit_line).permit(:user_id, :name, :credit_limit, :principal_bal, :apr, :maxed)
+      params.permit(:user_id, :name, :credit_limit, :principal_bal, :apr, :maxed)
     end
 end

@@ -8,7 +8,7 @@ class WithdrawalsController < ApplicationController
 
   # GET /users/:user_id/credit_lines/:credit_line_id/withdrawals
   def index
-    render json: @credit_line.withdrawals
+    render json: @credit_line.withdrawals.newest_first
   end
 
   # GET /users/:user_id/credit_lines/:credit_line_id/withdrawals/:id
@@ -96,6 +96,6 @@ class WithdrawalsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def withdrawal_params
-      params.require(:withdrawal).permit(:credit_line_id, :amount, :new_bal)
+      params.permit(:credit_line_id, :amount, :new_bal)
     end
 end

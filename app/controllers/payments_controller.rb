@@ -8,7 +8,7 @@ class PaymentsController < ApplicationController
 
   # GET /users/:user_id/credit_lines/:credit_line_id/payments
   def index
-    render json: @credit_line.payments
+    render json: @credit_line.payments.newest_first
   end
 
   # GET /users/:user_id/credit_lines/:credit_line_id/payments/:id
