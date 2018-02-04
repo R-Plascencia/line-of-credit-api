@@ -22,6 +22,6 @@ class ApplyInterestCycleJob < ApplicationJob
     loc_obj.interest = 0.0
     loc_obj.save
 
-    ApplyInterestCycleJob.set(wait: 4.minutes).perform_later(loc_obj)
+    ApplyInterestCycleJob.set(wait: 30.days).perform_later(loc_obj)
   end
 end

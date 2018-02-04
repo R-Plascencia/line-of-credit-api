@@ -5,14 +5,14 @@ module InterestHelper
     end
 
     # Test using minutes instead of days. REVERT BEFORE SUBMIT
-    def get_time_diff(ref_time)
-        ((Time.now.utc - ref_time)/60).to_i
-    end
+    # def get_time_diff(ref_time)
+    #     ((Time.now.utc - ref_time)/60).to_i
+    # end
 
     # Get difference in days between now and last activity (withdrawal, pmt, created_at)
-    # def get_time_diff(ref_time)
-    #     ((Time.now.utc - ref_time)/86400).to_i
-    # end
+    def get_time_diff(ref_time)
+        ((Time.now.utc - ref_time)/86400).to_i
+    end
 
     # Calculate the interest by taking into account the last activity and running interest
     # calculation on last principal balance and days in between

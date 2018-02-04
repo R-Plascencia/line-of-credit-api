@@ -31,7 +31,10 @@ class CreditLinesController < ApplicationController
     @credit_line = CreditLine.new(credit_line_params)
 
     if @credit_line.save
-      ApplyInterestCycleJob.set(wait: 5.minutes).perform_later(@credit_line)
+      #
+      # Start the billing/interest period now. Goes for the amount of time in set() param
+      #
+      ApplyInterestCycleJob.set(wait: 30.days).perform_later(@credit_line)
       render json: @credit_line, status: :created
     else
       render json: @credit_line.errors.full_messages, status: :unprocessable_entity
