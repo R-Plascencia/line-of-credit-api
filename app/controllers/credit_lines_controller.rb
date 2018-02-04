@@ -10,7 +10,20 @@ class CreditLinesController < ApplicationController
 
   # GET /users/:user_id/credit_lines/:id
   def show
-    render json: @credit_line
+    found = false
+    current_user.credit_lines.each do |_cl|
+      if _cl.id == @credit_line.id
+        found = true
+      end
+    end
+    
+    if found
+      render json: @credit_line
+    else
+      render status:401, json: { 
+      message: 'Unauthorized'
+      }
+    end
   end
 
   # POST users/:user_id/credit_lines
@@ -36,7 +49,13 @@ class CreditLinesController < ApplicationController
 
   # DELETE /users/:user_id/credit_lines/:id
   def destroy
-    @credit_line.destroy
+    if current_user.id == params[:user_id].to_i
+      @credit_line.destroy
+    else
+      render status:401, json: { 
+        message: 'Unauthorized'
+      }
+    end
   end
 
   private
