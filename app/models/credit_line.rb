@@ -3,6 +3,8 @@ class CreditLine < ApplicationRecord
     has_many :payments
     has_many :withdrawals
 
+    validates_presence_of :name, :credit_limit, :apr
+
     scope :has_outstanding_principal, lambda { where('principal_bal > 0') }
     scope :sorted, lambda { order('principal_bal ASC') }
     scope :newest_first, lambda { order('created_at DESC') }
