@@ -7,32 +7,32 @@ RSpec.describe CreditLine, type: :model do
   subject{ described_class.new(:name => 'Valid', :apr => 0.25, :credit_limit => 500, :user_id => 1) }
 
   describe 'Validity' do
-    it 'is not valid without params' do
+    it 'has attributes' do
       expect(CreditLine.new).to_not be_valid
     end
   
-    it "is not valid without a name" do
+    it "has a name" do
       expect(CreditLine.new({
         :credit_limit => 500,
         :apr => 0.25
       })).to_not be_valid
     end
   
-    it "is not valid without an APR" do
+    it "has an APR" do
       expect(CreditLine.new({
         :credit_limit => 500,
         :name => 'No APR test'
       })).to_not be_valid
     end
   
-    it "is not valid without a Credit Limit" do
+    it "has a Credit Limit" do
       expect(CreditLine.new({
         :apr => 0.63,
         :name => 'No cred limit test'
       })).to_not be_valid
     end
   
-    it "is not valid without a user ID" do
+    it "has a user ID" do
       expect(CreditLine.new({
         :apr => 0.500,
         :name => 'No cred limit test',
