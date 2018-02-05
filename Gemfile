@@ -41,3 +41,4 @@ gem 'active_model_serializers'
 # Started having problems with bcrypt gem :( only workaround that worked
 gem 'bcrypt', git: 'https://github.com/codahale/bcrypt-ruby.git', :require => 'bcrypt'
 gem 'knock'
+gem 'rspec-rails'
