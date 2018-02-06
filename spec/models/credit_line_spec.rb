@@ -66,6 +66,7 @@ RSpec.describe CreditLine, type: :model do
   describe 'Associations' do
     it { should have_many(:withdrawals) }
     it { should have_many(:payments) }
+    it { should belong_to(:user) }
   end
   
 end

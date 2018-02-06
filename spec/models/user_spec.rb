@@ -25,6 +25,8 @@ RSpec.describe User, type: :model do
     it 'is valid with all required attributes' do
       expect(subject).to be_valid
     end
+
+    it { should validate_uniqueness_of :email }
   end
 
   describe 'Defaults' do
