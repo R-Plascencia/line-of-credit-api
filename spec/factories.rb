@@ -26,4 +26,9 @@ FactoryBot.define do
         credit_line_id 1
     end
 
+    factory :withdrawal do
+        amount
+        credit_line_id 1
+    end
+
 end

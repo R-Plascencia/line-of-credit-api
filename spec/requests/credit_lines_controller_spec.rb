@@ -4,7 +4,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
 
   # 'Content-Type': 'application/json'
   let(:user) { FactoryBot.create(:user)}
-  let(:credit_line) { FactoryBot.create(:credit_line, user_id: user.id)}
+  let!(:credit_line) { FactoryBot.create(:credit_line, user_id: user.id)}
 
   let(:params) do
     {
@@ -32,11 +32,11 @@ RSpec.describe "CreditLinesControllers", type: :request do
     before { get "/api/users/#{user.id}/credit_lines/", headers: reg_headers }
 
     it 'works!' do
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status :ok
     end
 
     it 'returns a list' do
-      expect(json_response).to be_empty
+      expect(json_response).to be_an_instance_of Array
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
       before { post "/api/users/#{user.id}/credit_lines/", params: params, headers: auth_headers(user) }
 
       it 'works! (created successfully)' do
-        expect(response).to have_http_status(:created)
+        expect(response).to have_http_status :created
       end
   
       it 'has correct credit_limit' do
@@ -70,7 +70,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
       before { post "/api/users/#{user.id}/credit_lines/", params: params, headers: reg_headers }
 
       it 'has 401 response (unauthorized)' do
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status :unauthorized
       end
     end 
   end
@@ -81,7 +81,35 @@ RSpec.describe "CreditLinesControllers", type: :request do
       before { get "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: auth_headers(user) }
 
       it 'works!' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status :ok
+      end
+
+      it 'shows the correct credit line' do
+        expect(json_response[:id]).to eq credit_line.id
+      end
+
+      it 'shows credit limit' do
+        expect(json_response).to have_key :credit_limit
+      end
+
+      it 'shows principal balance' do
+        expect(json_response).to have_key :principal_bal
+      end
+
+      it 'shows APR' do
+        expect(json_response).to have_key :apr
+      end
+
+      it 'shows name' do
+        expect(json_response).to have_key :name
+      end
+
+      it 'shows interest accrued so far' do
+        expect(json_response).to have_key :interest
+      end
+
+      it 'references a user' do
+        expect(json_response).to have_key :user_id
       end
     end
 
@@ -89,7 +117,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
       before { get "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: reg_headers }
 
       it 'has 401 response (unauthorized)' do
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status :unauthorized
       end
     end
   end
@@ -103,18 +131,18 @@ RSpec.describe "CreditLinesControllers", type: :request do
       end
 
       it 'works!' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status :ok
       end
 
-      it 'updates name' do
+      it 'updates name correctly' do
         expect(json_response[:name]).to eq new_params[:name]
       end
 
-      it 'updates APR' do
+      it 'updates APR correctly' do
         expect(json_response[:apr]).to eq new_params[:apr]
       end
 
-      it 'updates credit limit' do
+      it 'updates credit limit correctly' do
         expect(json_response[:credit_limit]).to eq new_params[:credit_limit]
       end
     end
@@ -126,7 +154,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
       end
 
       it 'has 401 response (unauthorized)' do
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status :unauthorized
       end
     end
   end
@@ -137,7 +165,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
       before { delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: auth_headers(user) }
 
       it 'works! (destroyed)' do
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_http_status :no_content
       end
     end
 
@@ -145,7 +173,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
       before { delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: reg_headers }
 
       it 'has 401 response (unauthorized)' do
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status :unauthorized
       end
     end
   end

@@ -23,7 +23,7 @@ RSpec.describe "UserToken", type: :request do
     end
 
     it "works! (created)" do
-      expect(response).to have_http_status(:created)
+      expect(response).to have_http_status :created
     end
 
   end
