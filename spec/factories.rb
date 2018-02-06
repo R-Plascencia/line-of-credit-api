@@ -3,6 +3,10 @@ FactoryBot.define do
         "email#{n}@factory.com"
     end
 
+    sequence :amount do |n|
+        n
+    end
+
     factory :user do
       first_name 'John'
       last_name  'Doe'
@@ -17,5 +21,9 @@ FactoryBot.define do
         user_id 1
     end
 
+    factory :payment do
+        amount
+        credit_line_id 1
+    end
 
 end
