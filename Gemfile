@@ -33,6 +33,13 @@ end
 group :development do
 end
 
+group :test do
+  gem 'factory_bot_rails'
+
+  # Known issues with Windows
+  gem 'database_cleaner', git: 'https://github.com/DatabaseCleaner/database_cleaner.git'
+end
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
@@ -43,3 +50,4 @@ gem 'bcrypt', git: 'https://github.com/codahale/bcrypt-ruby.git', :require => 'b
 gem 'knock'
 gem 'rspec-rails'
 gem 'shoulda'
+
