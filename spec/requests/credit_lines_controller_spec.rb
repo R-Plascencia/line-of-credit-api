@@ -24,12 +24,12 @@ RSpec.describe "CreditLinesControllers", type: :request do
     }
   end
 
-  let(:reg_header) do
+  let(:reg_headers) do
     { 'Accept': 'application/json' }
   end
   
   describe "GET #index" do
-    before { get "/api/users/#{user.id}/credit_lines/", headers: reg_header }
+    before { get "/api/users/#{user.id}/credit_lines/", headers: reg_headers }
 
     it 'works!' do
       expect(response).to have_http_status(:ok)
@@ -67,7 +67,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
     end
 
     context 'When not authenticated' do
-      before { post "/api/users/#{user.id}/credit_lines/", params: params, headers: reg_header }
+      before { post "/api/users/#{user.id}/credit_lines/", params: params, headers: reg_headers }
 
       it 'has 401 response (unauthorized)' do
         expect(response).to have_http_status(:unauthorized)
@@ -86,7 +86,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
     end
 
     context 'When not authenticated' do
-      before { get "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: reg_header }
+      before { get "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: reg_headers }
 
       it 'has 401 response (unauthorized)' do
         expect(response).to have_http_status(:unauthorized)
@@ -122,7 +122,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
     context 'When not authenticated' do
       before do patch "/api/users/#{user.id}/credit_lines/#{credit_line.id}", 
         params:  new_params,
-        headers: reg_header 
+        headers: reg_headers 
       end
 
       it 'has 401 response (unauthorized)' do
@@ -142,7 +142,7 @@ RSpec.describe "CreditLinesControllers", type: :request do
     end
 
     context 'When not authenitcated' do
-      before { delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: reg_header }
+      before { delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: reg_headers }
 
       it 'has 401 response (unauthorized)' do
         expect(response).to have_http_status(:unauthorized)
