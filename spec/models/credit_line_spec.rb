@@ -62,5 +62,10 @@ RSpec.describe CreditLine, type: :model do
       expect(subject.payments).to eq([])
     end
   end
+
+  describe 'Associations' do
+    it { should have_many(:withdrawals) }
+    it { should have_many(:payments) }
+  end
   
 end

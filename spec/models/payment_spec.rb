@@ -23,4 +23,8 @@ RSpec.describe Payment, type: :model do
     end
   end
 
+  describe 'Associations' do
+    it { should belong_to(:credit_line) }
+  end
+
 end

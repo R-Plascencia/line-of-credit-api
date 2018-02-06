@@ -37,4 +37,8 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'Associations' do
+    it { should have_many(:credit_lines) }
+  end
+
 end

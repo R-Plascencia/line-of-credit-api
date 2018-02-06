@@ -22,4 +22,9 @@ RSpec.describe Withdrawal, type: :model do
       expect(Withdrawal.new({ :amount => -1, :credit_line_id => 1})).to_not be_valid
     end
   end
+
+  describe 'Associations' do
+    it { should belong_to(:credit_line) }
+  end
+
 end
