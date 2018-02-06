@@ -1,7 +1,7 @@
 class CreditLine < ApplicationRecord
     belongs_to :user
-    has_many :payments
-    has_many :withdrawals
+    has_many :payments, :dependent => :destroy
+    has_many :withdrawals, :dependent => :destroy
 
     validates_presence_of :name, :credit_limit, :apr
 
