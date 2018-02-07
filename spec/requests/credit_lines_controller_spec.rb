@@ -159,12 +159,21 @@ RSpec.describe "CreditLinesControllers", type: :request do
     end
   end
 
-  describe 'POST #destroy' do
+  describe 'DELETE #destroy' do
 
     context 'When authenticated' do
-      before { delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: auth_headers(user) }
+      # before {  }
 
       it 'works! (destroyed)' do
+        delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: auth_headers(user)
+        expect(response).to have_http_status :no_content
+      end
+
+      it 'works on credit line with payments & withdrawals' do
+        withdrawal = FactoryBot.create(:withdrawal, credit_line_id: credit_line.id)
+        pmt = FactoryBot.create(:payment, credit_line_id: credit_line.id)
+        delete "/api/users/#{user.id}/credit_lines/#{credit_line.id}", headers: auth_headers(user)
+        
         expect(response).to have_http_status :no_content
       end
     end
