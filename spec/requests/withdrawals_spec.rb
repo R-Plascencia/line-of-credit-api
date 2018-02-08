@@ -4,7 +4,7 @@ RSpec.describe "Withdrawals", type: :request do
   let(:user) { FactoryBot.create(:user)}
   let(:credit_line) { FactoryBot.create(:credit_line, user_id: user.id) }
   let!(:withdrawal) { FactoryBot.create(:withdrawal, credit_line_id: credit_line.id) }
-
+  let(:cl_prev_bal) { credit_line.principal_bal }
   let(:reg_headers) do
     { 'Accept': 'application/json' }
   end
@@ -80,10 +80,14 @@ RSpec.describe "Withdrawals", type: :request do
   describe 'POST #create' do
 
     context 'When authenticated' do
-      before { post "/api/users/#{user.id}/credit_lines/#{credit_line.id}/withdrawals/", params: params, headers: auth_headers(user)}
+      before { post "/api/users/#{user.id}/credit_lines/#{credit_line.id}/withdrawals/", params: params, headers: auth_headers(user) }
 
       it 'works! (created)' do
         expect(response).to have_http_status :created
+      end
+
+      it 'has an amount' do
+        expect(json_response).to have_key :amount
       end
 
       it 'has correct amount' do
@@ -96,6 +100,15 @@ RSpec.describe "Withdrawals", type: :request do
 
       it 'returns a new balance' do
         expect(json_response).to have_key :new_bal
+      end
+
+      it 'has correct new balance' do
+        expect(json_response[:new_bal]).to eq(credit_line.principal_bal + params[:amount])
+      end
+
+      it 'affects credit line principal' do
+        line = CreditLine.find(credit_line.id)
+        expect(line.principal_bal).to eq (cl_prev_bal + params[:amount])
       end
     end
 
