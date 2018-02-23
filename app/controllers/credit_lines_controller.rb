@@ -20,9 +20,7 @@ class CreditLinesController < ApplicationController
     if found
       render json: @credit_line
     else
-      render status:401, json: { 
-      message: 'Unauthorized'
-      }
+      render_unauth
     end
   end
 
@@ -43,10 +41,13 @@ class CreditLinesController < ApplicationController
 
   # PATCH/PUT /users/:user_id/credit_lines/:id
   def update
-    if @credit_line.update(credit_line_params)
-      render json: @credit_line
+    if owns_credit_line(current_user, params[:id])
+      if @credit_line.update(credit_line_params)
+        render json: @credit_line
+      end
     else
-      render json: @credit_line.errors, status: :unprocessable_entity
+      # render json: @credit_line.errors, status: :unprocessable_entity
+      render_unauth
     end
   end
 
@@ -55,9 +56,7 @@ class CreditLinesController < ApplicationController
     if current_user.id == params[:user_id].to_i
       @credit_line.destroy
     else
-      render status:401, json: { 
-        message: 'Unauthorized'
-      }
+      render_unauth
     end
   end
 
@@ -74,5 +73,21 @@ class CreditLinesController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def credit_line_params
       params.permit(:user_id, :name, :credit_limit, :principal_bal, :apr, :maxed)
+    end
+
+    def owns_credit_line(user, credit_line_id)
+      begin
+        user_cl = user.credit_lines.find(credit_line_id)
+      rescue => ex
+        return false
+      end
+
+      return true
+    end
+
+    def render_unauth
+      render status:401, json: { 
+        message: 'Unauthorized'
+      }
     end
 end
